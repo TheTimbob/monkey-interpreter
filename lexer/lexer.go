@@ -9,12 +9,15 @@ type Lexer struct {
 	ch           byte // current char under examination
 }
 
+// Creates a new lexer instance.
 func New(input string) *Lexer {
 	l := &Lexer{input: input}
 	l.readChar()
 	return l
 }
 
+// Evaluates type of the next token.
+// Handles all token types and literals.s
 func (l *Lexer) NextToken() token.Token {
 	var tok token.Token
 
@@ -84,12 +87,14 @@ func (l *Lexer) NextToken() token.Token {
 	return tok
 }
 
+// Skips whitespace characters via readChar().
 func (l *Lexer) skipWhitespace() {
 	for l.ch == ' ' || l.ch == '\t' || l.ch == '\n' || l.ch == '\r' {
 		l.readChar()
 	}
 }
 
+// Increments the current position and sets the next character in the lexer.
 func (l *Lexer) readChar() {
 	if l.readPosition >= len(l.input) {
 		l.ch = 0
@@ -100,6 +105,7 @@ func (l *Lexer) readChar() {
 	l.readPosition += 1
 }
 
+// Returns the next character without advancing the position.
 func (l *Lexer) peekChar() byte {
 	if l.readPosition >= len(l.input) {
 		return 0
@@ -108,6 +114,7 @@ func (l *Lexer) peekChar() byte {
 	}
 }
 
+// Checks if the character is a letter.
 func (l *Lexer) readIdentifier() string {
 	position := l.position
 	for isLetter(l.ch) {
@@ -116,6 +123,7 @@ func (l *Lexer) readIdentifier() string {
 	return l.input[position:l.position]
 }
 
+// Checks if the character is a digit.s
 func (l *Lexer) readNumber() string {
 	position := l.position
 	for isDigit(l.ch) {
@@ -124,14 +132,17 @@ func (l *Lexer) readNumber() string {
 	return l.input[position:l.position]
 }
 
+// Returns if character is between a-z or A-Z or _
 func isLetter(ch byte) bool {
 	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_'
 }
 
+// Returns if character is between 0-9
 func isDigit(ch byte) bool {
 	return '0' <= ch && ch <= '9'
 }
 
+// Creates a new instance of a token.
 func newToken(tokenType token.TokenType, ch byte) token.Token {
 	return token.Token{Type: tokenType, Literal: string(ch)}
 }
